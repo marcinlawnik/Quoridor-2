@@ -13,31 +13,15 @@ int CaseTriangle::getID()
 
 void CaseTriangle::setNeighbour(CaseTriangle *c1, CaseTriangle *c2)
 {
-    nbNeighbour = 2;
     n1 = c1;
     n2 = c2;
     n3 = new CaseTriangle(-1);
 }
 void CaseTriangle::setNeighbour(CaseTriangle *c1, CaseTriangle *c2, CaseTriangle *c3)
 {
-    nbNeighbour = 3;
     n1 = c1;
     n2 = c2;
     n3 = c3;
-}
-
-void CaseTriangle::computeScore()
-{
-    int score = 0;
-    int s1 = n1->getScore();
-    int s2 = n2->getScore();
-    if(s1>0) score = s1;
-    if(s2>0 && s2<score) score = s2;
-    if(nbNeighbour==3){
-        int s3 = n3->getScore();
-        if(s3>0 && s3<score) score = s3;
-    }
-    score_ = score + 1;
 }
 
 void CaseTriangle::setScore(int score)
@@ -73,6 +57,26 @@ void CaseTriangle::addWall(int id1, int id2)
             n2 = new CaseTriangle(-1);
         if(n3->getID()==id1)
             n3 = new CaseTriangle(-1);
+    }
+
+}
+
+CaseTriangle* CaseTriangle::min()
+{
+    QList<int> val;
+    if(n1->isValid()) val << n1->getScore();
+    if(n2->isValid()) val << n2->getScore();
+    if(n3->isValid()) val << n3->getScore();
+    int minVal = minList(val);
+
+    assert(val.size()!=0);
+
+    int index = rand()%3;
+    while(1){
+        if(index==1 && n1->isValid() && n1->getScore()==minVal) return n1;
+        if(index==2 && n2->isValid() && n2->getScore()==minVal) return n2;
+        if(index==3 && n3->isValid() && n3->getScore()==minVal) return n3;
+        index = rand()%3;
     }
 
 }

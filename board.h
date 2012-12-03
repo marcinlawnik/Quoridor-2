@@ -9,7 +9,10 @@ class Board
 public:
     Board();
     void addWall(int id1, int id2);
-    int getBestScore(int id, int player);
+    int getBestScore(int player);
+    QList<int> getPath(int id, int player);
+
+    QList<int> ends(int player);
 
 private:
     CaseTriangle *cases[54];

@@ -73,10 +73,10 @@ Board::Board()
 
     addWall(45,49);
     addWall(44,48);
-    cases[1]->setScore(1);
+    addWall(46,50);
 
-    for(int i=0;i<54;i++)
-        qDebug() << i << cases[i]->getScore();
+    //Test
+    getPath(1,0);
 }
 
 void Board::addWall(int id1, int id2)
@@ -86,25 +86,51 @@ void Board::addWall(int id1, int id2)
 
 }
 
-int Board::getBestScore(int id, int player)
+int Board::getBestScore(int player)
+{
+    QList<int> c = ends(player);
+
+    int min = cases[c.at(0)]->getScore();
+    if(c.at(1)<min) min = cases[c.at(1)]->getScore();
+    if(c.at(2)<min) min = cases[c.at(2)]->getScore();
+
+    return min;
+}
+
+QList<int> Board::getPath(int id, int player)
 {
     cases[id]->setScore(1);
-    if(player==0){
-        return min( cases[51]->getScore(), min( cases[52]->getScore(), cases[53]->getScore() ));
+
+    QList<int> e = ends(player);
+    int min = getBestScore(player);
+
+    int best = e.at(rand()%3);
+    while(cases[best]->getScore()!=min){
+        best = e.at(rand()%3);
     }
-    if(player==1){
-        return min( cases[32]->getScore(), min( cases[42]->getScore(), cases[50]->getScore() ));
+    qDebug() << "Goto " << best;
+
+    CaseTriangle *n = cases[best];
+
+    QList<int> path;
+    while(n->getID()!=id){
+        path.push_front( n->getID() );
+        n = n->min();
     }
-    if(player==2){
-        return min( cases[6]->getScore(), min( cases[15]->getScore(), cases[26]->getScore() ));
+    qDebug() << path;
+
+}
+
+QList<int> Board::ends(int player)
+{
+    QList<int> list;
+    switch(player){
+    case 0: list << 51 << 52 << 53;
+    case 1: list << 32 << 42 << 50;
+    case 2: list << 6 << 15 << 26;
+    case 3: list << 0 << 1 << 2;
+    case 4: list << 3 << 11 << 21;
+    case 5: list << 27 << 38 << 47;
     }
-    if(player==3){
-        return min( cases[0]->getScore(), min( cases[1]->getScore(), cases[2]->getScore() ));
-    }
-    if(player==4){
-        return min( cases[3]->getScore(), min( cases[11]->getScore(), cases[21]->getScore() ));
-    }
-    if(player==5){
-        return min( cases[27]->getScore(), min( cases[38]->getScore(), cases[47]->getScore() ));
-    }
+    return list;
 }

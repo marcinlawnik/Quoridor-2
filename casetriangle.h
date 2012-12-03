@@ -1,5 +1,9 @@
 #ifndef CASETRIANGLE_H
 #define CASETRIANGLE_H
+#include <QList>
+#include <QMap>
+#include <assert.h>
+
 
 class CaseTriangle
 {
@@ -17,10 +21,19 @@ public:
 
     void addWall(int id1, int id2);
 
+    CaseTriangle* min();
+
+    int minList(QList<int> list){
+        if(list.size()==0) return 0.0;
+        int min = list.at(0);
+        for(int i=1;i<list.size();i++)
+            if(list.at(i)<min) min = list.at(i);
+        return min;
+    }
+
 private:
     int id_;
     CaseTriangle *n1,*n2,*n3;
-    int nbNeighbour;
     int score_;
 };
 
